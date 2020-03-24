@@ -7,3 +7,8 @@ spring:
     mongodb:
       uri: mongodb://root:root@192.168.217.130:27017
       database: xc_cms
+  rabbitmq:
+    addresses: 192.168.217.130
+    username: guest
+    password: guest
+    virtual-host: /

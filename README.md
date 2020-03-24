@@ -1,3 +1,11 @@
+项目：
+
+| xc-ui-pc-sysmanage | vue项目 后台管理 |
+| ------------------ | ---------------- |
+| xcEduService       | 后台服务         |
+
+
+
 ### 第一天 cms搭建
 
 CMS （Content Management System）即内容管理系统 
@@ -80,4 +88,14 @@ dataurl：http://localhost:31001/cms/config/getmodel/5a791725dd573c3574ee333f
 MongoDB数据库 studio3T 客户端
 
 nginx搭建本地的静态文件映射
+
+### 第五天 rabbitmq基础
+
+### 第六天 页面发布
+
+技术点： rabbitmq
+
+
+
+页面发布 替换静态资源 实现前台页面的替换
 
