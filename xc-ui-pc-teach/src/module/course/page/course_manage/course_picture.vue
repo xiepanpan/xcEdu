@@ -72,7 +72,7 @@
           let fileId = response.fileSystem.fileId;
           courseApi.addCoursePic(this.courseid,fileId).then(res=>{
               if(res.success){
-                  this.$message.success("上传图片")
+                  this.$message.success("上传图片成功")
               }else{
                 this.$message.error(res.message)
               }
@@ -115,7 +115,7 @@
               //将图片地址设置到
             this.fileList.push({name:'pic',url:imgUrl,fileId:res.pic})
           }
-
+          // console.log(this.fileList);
       })
       //测试调用promise方法，then中写的成功后的回调方法，
 //      this.testPromise(3).then(res=>{

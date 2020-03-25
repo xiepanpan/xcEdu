@@ -3,6 +3,7 @@
 | xc-ui-pc-sysmanage | vue 项目系统管理中心 |
 | ------------------ | -------------------- |
 | xcEduService       | 后台服务             |
+| xc-ui-pc-teach     | 教学后台配置         |
 
 
 
@@ -101,9 +102,29 @@ nginx搭建本地的静态文件映射
 
 课程查询和添加 三级树状结构
 
+element-ui 的tree组件
 
+### 第七天 pageHelper 分页
 
+### 第八天 fastdfs 图片上传
 
+课程图片的保存 查询 和删除
+
+删除： promise异步调用
+
+通过查询deleteCoursePic方法的底层代码，deleteCoursePic最终返回一个promise对象。
+
+Promise是ES6提供的用于异步处理的对象，因为axios提交是异步提交，这里使用promise作为返回值。
+
+Promise的使用方法如下：
+
+Promise对象在处理过程中有三种状态：
+
+pending：进行中
+
+resolved：操作成功
+
+rejected: 操作失败
 
 项目命令：
 
