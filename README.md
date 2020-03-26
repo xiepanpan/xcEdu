@@ -108,7 +108,9 @@ element-ui 的tree组件
 
 ### 第八天 fastdfs 图片上传
 
-课程图片的保存 查询 和删除
+课程图片的保存 查询 和删除  
+
+vue图片上传组件
 
 删除： promise异步调用
 
@@ -126,5 +128,58 @@ resolved：操作成功
 
 rejected: 操作失败
 
+
+
+### 第九天
+
+#### eureka注册中心
+
+为什么 要用注册中心？
+1、微服务数量众多，要进行远程调用就需要知道服务端的ip地址和端口，注册中心帮助我们管理这些服务的ip和
+端口。
+2、微服务会实时上报自己的状态，注册中心统一管理这些微服务的状态，将存在问题的服务踢出服务列表，客户
+端获取到可用的服务进行调用。
+
+
+
+高可用：
+
+1、在实际使用时Eureka Server至少部署两台服务器，实现高可用。
+2、两台Eureka Server互相注册。
+3、微服务需要连接两台Eureka Server注册，当其中一台Eureka死掉也不会影响服务的注册与发现。
+4、微服务会定时向Eureka server发送心跳，报告自己的状态。
+5、微服务从注册中心获取服务地址以RESTful方式发起远程调用。
+
+在IDEA中制作启动脚本:
+
+-DPORT=50101 -DEUREKA_DOMAIN=eureka01 -DEUREKA_SERVER=http://eureka02:50102/eureka/
+
+-DPORT=50102 -DEUREKA_DOMAIN=eureka02 -DEUREKA_SERVER=http://eureka01:50101/eureka/
+
+
+
+
+
 项目命令：
 
+
+
+
+
+### hosts文件：
+
+```
+#xuecheng
+127.0.0.1 www.xuecheng.com
+127.0.0.1 eureka01
+127.0.0.1 eureka02
+192.168.217.130 img.xuecheng.com
+```
+
+端口分配：
+
+cms 31001
+
+course 31200
+
+eureka 50102  50101
