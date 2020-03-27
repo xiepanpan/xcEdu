@@ -1,6 +1,7 @@
 package com.xuecheng.manage_course;
 
 import com.xuecheng.framework.domain.cms.CmsPage;
+import com.xuecheng.manage_course.client.CmsPageClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

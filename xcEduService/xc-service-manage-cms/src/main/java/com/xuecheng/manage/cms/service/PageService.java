@@ -144,21 +144,23 @@ public class PageService {
         //根据id从数据库查询页面信息
         CmsPage one = this.getById(id);
         if(one!=null){
-            BeanUtils.copyProperties(cmsPage,one);
-            //准备更新数据
+//            BeanUtils.copyProperties(cmsPage,one);
+//            准备更新数据
             //设置要修改的数据
-//            //更新模板id
-//            one.setTemplateId(cmsPage.getTemplateId());
-//            //更新所属站点
-//            one.setSiteId(cmsPage.getSiteId());
-//            //更新页面别名
-//            one.setPageAliase(cmsPage.getPageAliase());
-//            //更新页面名称
-//            one.setPageName(cmsPage.getPageName());
-//            //更新访问路径
-//            one.setPageWebPath(cmsPage.getPageWebPath());
-//            //更新物理路径
-//            one.setPagePhysicalPath(cmsPage.getPagePhysicalPath());
+            //更新模板id
+            one.setTemplateId(cmsPage.getTemplateId());
+            //更新所属站点
+            one.setSiteId(cmsPage.getSiteId());
+            //更新页面别名
+            one.setPageAliase(cmsPage.getPageAliase());
+            //更新页面名称
+            one.setPageName(cmsPage.getPageName());
+            //更新访问路径
+            one.setPageWebPath(cmsPage.getPageWebPath());
+            //更新物理路径
+            one.setPagePhysicalPath(cmsPage.getPagePhysicalPath());
+            //更新dataUrl
+            one.setDataUrl(cmsPage.getDataUrl());
             //提交修改
             cmsPageRepository.save(one);
             return new CmsPageResult(CommonCode.SUCCESS,one);
@@ -337,5 +339,20 @@ public class PageService {
         cmsPageRepository.save(cmsPage);
         return cmsPage;
 
+    }
+
+    /**
+     * 保存页面 有则更新 没有添加
+     * @param cmsPage
+     * @return
+     */
+    public CmsPageResult save(CmsPage cmsPage) {
+        CmsPage cmsPage1 = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(),
+                cmsPage.getSiteId(),
+                cmsPage.getPageWebPath());
+        if (cmsPage1!=null) {
+            return update(cmsPage1.getPageId(),cmsPage);
+        }
+        return add(cmsPage);
     }
 }

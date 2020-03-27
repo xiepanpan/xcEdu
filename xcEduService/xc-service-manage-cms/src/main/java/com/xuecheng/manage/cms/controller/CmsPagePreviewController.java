@@ -28,6 +28,7 @@ public class CmsPagePreviewController extends BaseController {
         //执行静态化
         String pageHtml = pageService.getPageHtml(pageId);
         ServletOutputStream outputStream = response.getOutputStream();
+        response.setHeader("Content-type","text/html;charset=utf-8");
         outputStream.write(pageHtml.getBytes("utf-8"));
     }
 }

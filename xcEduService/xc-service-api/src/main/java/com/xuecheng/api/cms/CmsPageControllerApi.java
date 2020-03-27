@@ -38,4 +38,7 @@ public interface CmsPageControllerApi {
     //发布页面
     @ApiOperation("发布页面")
     public ResponseResult post(String id);
+
+    @ApiOperation("保存页面")
+    public CmsPageResult save(CmsPage cmsPage);
 }

@@ -40,4 +40,13 @@ public class GridFsTest {
         log.info(String.valueOf(objectId));
         //5e6f52db2ed406762478389a
     }
+
+    @Test
+    public void testStoreCourseFtl() throws FileNotFoundException {
+        File file = new File("E:/temp/course.ftl");
+        FileInputStream fileInputStream = new FileInputStream(file);
+        ObjectId objectId = gridFsTemplate.store(fileInputStream, "index_banner.ftl");
+        log.info(String.valueOf(objectId));
+        //5e7d72372ed40680bc53c2a4
+    }
 }
