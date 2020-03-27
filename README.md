@@ -164,9 +164,19 @@ rejected: 操作失败
 1、模板信息保存在xc_cms数据库(mongodb)的cms_template表
 2、模板文件保存在mongodb的GridFS中。
 
+流程图：
 
+![](https://xiepanpan123.oss-cn-beijing.aliyuncs.com/%E5%AD%A6%E6%88%90%E5%9C%A8%E7%BA%BF/%E8%AF%BE%E7%A8%8B%E9%A2%84%E8%A7%88%E5%8A%9F%E8%83%BD%E6%B5%81%E7%A8%8B.png)
+
+**ssi** 服务端嵌入（server side include）,是一种基于服务器端的网页制作技术，可以将多个子页面合并渲染输出，大多数基于unix平台的web服务器均支持ssi指令，如nginx、apache
+
+https://www.cnblogs.com/dehigher/p/10127380.html
 
 项目命令：
+
+
+
+### 第十天 课程发布
 
 
 

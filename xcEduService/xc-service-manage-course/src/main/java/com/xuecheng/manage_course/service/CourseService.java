@@ -2,6 +2,7 @@ package com.xuecheng.manage_course.service;
 
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.response.CmsPageResult;
+import com.xuecheng.framework.domain.cms.response.CmsPostPageResult;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.CourseMarket;
 import com.xuecheng.framework.domain.course.CoursePic;
@@ -237,5 +238,39 @@ public class CourseService {
         TeachplanNode teachplanNode = teachplanMapper.selectList(id);
         courseView.setTeachplanNode(teachplanNode);
         return courseView;
+    }
+
+    @Transactional
+    public CoursePublishResult publish(String id) {
+        //查询课程
+        CourseBase courseBaseById = findCourseBaseById(id);
+
+        CmsPage cmsPage = new CmsPage();
+        cmsPage.setSiteId(publishSiteId);
+        cmsPage.setDataUrl(publishDataUrlPre+id);
+        cmsPage.setPageName(id+".html");
+        cmsPage.setPageAliase(courseBaseById.getName());
+        cmsPage.setPagePhysicalPath(publishPagePhysicalpath);
+        cmsPage.setPageWebPath(publishPageWebpath);
+        cmsPage.setTemplateId(publishTemplateId);
+        //调用cms一键发布接口将课程详情页面发布到服务器
+        CmsPostPageResult cmsPostPageResult = cmsPageClient.postPageQuick(cmsPage);
+        if (!cmsPostPageResult.isSuccess()) {
+            return new CoursePublishResult(CommonCode.FAIL,null);
+        }
+        //保存课程发布状态为已发布
+        CourseBase courseBase = saveCoursePubState(id);
+        if (courseBase == null) {
+            return new CoursePublishResult(CommonCode.FAIL,null);
+        }
+        String pageUrl = cmsPostPageResult.getPageUrl();
+        return new CoursePublishResult(CommonCode.SUCCESS,pageUrl);
+    }
+
+    private CourseBase saveCoursePubState(String courseId) {
+        CourseBase courseBaseById = findCourseBaseById(courseId);
+        courseBaseById.setStatus("202002");
+        courseBaseRepository.save(courseBaseById);
+        return courseBaseById;
     }
 }
