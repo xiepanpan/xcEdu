@@ -1,12 +1,10 @@
 package com.xuecheng.manage_course.service;
 
+import com.alibaba.fastjson.JSON;
 import com.xuecheng.framework.domain.cms.CmsPage;
 import com.xuecheng.framework.domain.cms.response.CmsPageResult;
 import com.xuecheng.framework.domain.cms.response.CmsPostPageResult;
-import com.xuecheng.framework.domain.course.CourseBase;
-import com.xuecheng.framework.domain.course.CourseMarket;
-import com.xuecheng.framework.domain.course.CoursePic;
-import com.xuecheng.framework.domain.course.Teachplan;
+import com.xuecheng.framework.domain.course.*;
 import com.xuecheng.framework.domain.course.ext.CourseView;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.response.CourseCode;
@@ -17,11 +15,15 @@ import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.client.CmsPageClient;
 import com.xuecheng.manage_course.dao.*;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,8 @@ public class CourseService {
     CourseMarketRepository courseMarketRepository;
     @Autowired
     CmsPageClient cmsPageClient;
+    @Autowired
+    CoursePubRepository coursePubRepository;
 
     @Value("${course-publish.dataUrlPre}")
     private String publishDataUrlPre;
@@ -264,7 +268,61 @@ public class CourseService {
             return new CoursePublishResult(CommonCode.FAIL,null);
         }
         String pageUrl = cmsPostPageResult.getPageUrl();
+
+        //保存课程索引信息
+        CoursePub coursePub = createCoursePub(id);
+        saveCoursePub(id,coursePub);
+
         return new CoursePublishResult(CommonCode.SUCCESS,pageUrl);
+    }
+
+    /**
+     * 保存课程发布信息 用于搜索
+     * @param id
+     * @param coursePub
+     * @return
+     */
+    private CoursePub saveCoursePub(String id, CoursePub coursePub) {
+        Optional<CoursePub> coursePubOptional = coursePubRepository.findById(id);
+        CoursePub coursePubNew = null;
+        if (coursePubOptional.isPresent()) {
+            coursePubNew = coursePubOptional.get();
+        }else {
+            coursePubNew = new CoursePub();
+        }
+        BeanUtils.copyProperties(coursePub,coursePubNew);
+        coursePubNew.setId(id);
+        coursePubNew.setTimestamp(new Date());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new Date());
+        coursePubNew.setPubTime(date);
+        coursePubRepository.save(coursePubNew);
+        return coursePubNew;
+    }
+
+    /**
+     * 创建coursePub对象
+     * @param id
+     * @return
+     */
+    private CoursePub createCoursePub(String id) {
+        CoursePub coursePub = new CoursePub();
+        Optional<CourseBase> baseOptional = courseBaseRepository.findById(id);
+        if (baseOptional.isPresent()) {
+            CourseBase courseBase = baseOptional.get();
+            BeanUtils.copyProperties(courseBase,coursePub);
+        }
+
+        //查询课程营销信息
+        Optional<CourseMarket> marketOptional = courseMarketRepository.findById(id);
+        if (marketOptional.isPresent()) {
+            CourseMarket courseMarket = marketOptional.get();
+            BeanUtils.copyProperties(courseMarket,coursePub);
+        }
+        TeachplanNode teachplanNode = teachplanMapper.selectList(id);
+        String jsonString = JSON.toJSONString(teachplanNode);
+        coursePub.setTeachplan(jsonString);
+        return coursePub;
     }
 
     private CourseBase saveCoursePubState(String courseId) {

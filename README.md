@@ -180,6 +180,34 @@ https://www.cnblogs.com/dehigher/p/10127380.html
 
 
 
+课程发布流程图
+
+![](https://xiepanpan123.oss-cn-beijing.aliyuncs.com/%E5%AD%A6%E6%88%90%E5%9C%A8%E7%BA%BF/%E8%AF%BE%E7%A8%8B%E5%8F%91%E5%B8%83%E5%8A%9F%E8%83%BD%E6%B5%81%E7%A8%8B.png)
+
+
+
+
+
+http://www.xuecheng.com/cms/preview/5e7d94f92ed406810c600bdb
+
+### 第十一天 
+
+如何维护课程索引信息？
+
+1、当课程向MySQL添加后同时将课程信息添加到索引库。
+
+采用Logstach实现，Logstach会从MySQL中将数据采集到ES索引库。
+
+2、当课程在MySQL更新信息后同时更新该课程在索引库的信息。
+
+采用Logstach实现。
+
+3、当课程在MySQL删除后同时将该课程从索引库删除。
+
+手工写程序实现，在删除课程后将索引库中该课程信息删除。
+
+
+
 
 
 ### hosts文件：
