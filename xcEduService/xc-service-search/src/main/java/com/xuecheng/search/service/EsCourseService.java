@@ -129,6 +129,9 @@ public class EsCourseService {
             for(SearchHit searchHit: searchHits) {
                 CoursePub coursePub = new CoursePub();
                 Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
+                //取出id
+                String id = (String)sourceAsMap.get("id");
+                coursePub.setId(id);
                 String name = (String) sourceAsMap.get("name");
                 //取出高亮字段name
                 Map<String, HighlightField> highlightFields = searchHit.getHighlightFields();
