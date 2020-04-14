@@ -266,6 +266,38 @@ WebUploader 断点续传
 
 在数据库记录文件信息。
 
+### 第十四天 视频处理
+
+ **原始视频通常需要经过编码处理，生成m3u8和ts文件方可基于HLS协议播放视频。通常用户上传原始视频，系统自动处理成标准格式，系统对用户上传的视频自动编码、转换，最终生成m3u8文件和ts文件**，处理流程如下：
+
+1、用户上传视频成功
+
+2、系统对上传成功的视频自动开始编码处理
+
+3、用户查看视频处理结果，没有处理成功的视频用户可在管理界面再次触发处理
+
+4、视频处理完成将视频地址及处理结果保存到数据库
+
+
+
+**代码中使用@RabbitListener注解指定消费方法，默认情况是单线程监听队列，可以观察当队列有多个任务时消费端每次只消费一个消息，单线程处理消息容易引起消息处理缓慢，消息堆积，不能最大利用硬件资源。**
+
+**可以配置mq的容器工厂参数，增加并发处理数量即可实现多线程处理监听队列，实现多线程处理消息**。
+
+```java
+//消费者并发数量
+    public static final int DEFAULT_CONCURRENT = 10;
+
+    @Bean("customContainerFactory")
+    public SimpleRabbitListenerContainerFactory containerFactory(SimpleRabbitListenerContainerFactoryConfigurer configurer, ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConcurrentConsumers(DEFAULT_CONCURRENT);
+        factory.setMaxConcurrentConsumers(DEFAULT_CONCURRENT);
+        configurer.configure(factory, connectionFactory);
+        return factory;
+    }
+```
+
 
 
 创建映射：
