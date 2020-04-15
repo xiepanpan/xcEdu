@@ -49,6 +49,8 @@ public class CourseService {
     CmsPageClient cmsPageClient;
     @Autowired
     CoursePubRepository coursePubRepository;
+    @Autowired
+    TeachplanMediaRepository teachplanMediaRepository;
 
     @Value("${course-publish.dataUrlPre}")
     private String publishDataUrlPre;
@@ -330,5 +332,45 @@ public class CourseService {
         courseBaseById.setStatus("202002");
         courseBaseRepository.save(courseBaseById);
         return courseBaseById;
+    }
+
+    /**
+     * 保存课程计划与媒体文件的关联信息
+     * @param teachplanMedia
+     * @return
+     */
+    public ResponseResult savemedia(TeachplanMedia teachplanMedia) {
+        if (teachplanMedia == null || StringUtils.isEmpty(teachplanMedia.getTeachplanId())) {
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+        String teachplanId = teachplanMedia.getTeachplanId();
+        Optional<Teachplan> optional = teachplanRepository.findById(teachplanId);
+        if (!optional.isPresent()) {
+            ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        }
+
+        Teachplan teachplan = optional.get();
+        String grade = teachplan.getGrade();
+        if (StringUtils.isEmpty(grade)||!grade.equals("3")) {
+            //只允许选择第三级的课程计划关联视频
+            ExceptionCast.cast(CourseCode.COURSE_MEDIA_TEACHPLAN_GRADEERROR);
+        }
+        Optional<TeachplanMedia> mediaOptional = teachplanMediaRepository.findById(teachplanId);
+        TeachplanMedia one = null;
+        if (mediaOptional.isPresent()) {
+            one = mediaOptional.get();
+        }else {
+            one = new TeachplanMedia();
+        }
+
+        //将one保存到数据库
+        one.setCourseId(teachplan.getCourseid());
+        one.setMediaId(teachplanMedia.getMediaId());
+        one.setMediaFileOriginalName(teachplanMedia.getMediaFileOriginalName());
+        one.setMediaUrl(teachplanMedia.getMediaUrl());
+        one.setTeachplanId(teachplanId);
+        teachplanMediaRepository.save(one);
+
+        return new ResponseResult(CommonCode.SUCCESS);
     }
 }
