@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,6 +52,8 @@ public class CourseService {
     CoursePubRepository coursePubRepository;
     @Autowired
     TeachplanMediaRepository teachplanMediaRepository;
+    @Autowired
+    TeachplanMediaPubRepository teachplanMediaPubRepository;
 
     @Value("${course-publish.dataUrlPre}")
     private String publishDataUrlPre;
@@ -275,7 +278,25 @@ public class CourseService {
         CoursePub coursePub = createCoursePub(id);
         saveCoursePub(id,coursePub);
 
+        //向teachplanMediaPub中保存课程媒资信息
+        saveTeachplanMediaPub(id);
+
         return new CoursePublishResult(CommonCode.SUCCESS,pageUrl);
+    }
+
+    private void saveTeachplanMediaPub(String courseId) {
+        //先删teachplanMediaPub的数据
+        teachplanMediaPubRepository.deleteByCourseId(courseId);
+        List<TeachplanMedia> teachplanMediaList = teachplanMediaRepository.findByCourseId(courseId);
+        List<TeachplanMediaPub> teachplanMediaPubList = new ArrayList<>();
+        for (TeachplanMedia teachplanMedia:teachplanMediaList) {
+            TeachplanMediaPub teachplanMediaPub = new TeachplanMediaPub();
+            BeanUtils.copyProperties(teachplanMedia,teachplanMediaPub);
+            teachplanMediaPub.setTimestamp(new Date());
+            teachplanMediaPubList.add(teachplanMediaPub);
+        }
+
+        teachplanMediaPubRepository.saveAll(teachplanMediaPubList);
     }
 
     /**

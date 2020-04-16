@@ -228,26 +228,32 @@ public class EsCourseService {
     }
 
     public QueryResponseResult getmedia(String[] teachplanIds) {
+        //定义一个搜索请求对象
         SearchRequest searchRequest = new SearchRequest(mediaIndex);
+        //指定type
         searchRequest.types(mediaType);
+
+        //定义SearchSourceBuilder
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         //设置使用termsQuery根据多个id 查询
-        searchSourceBuilder.query(QueryBuilders.termQuery("teachplan_id",teachplanIds));
+        searchSourceBuilder.query(QueryBuilders.termsQuery("teachplan_id",teachplanIds));
         //过虑源字段
         String[] includes = mediaSourceField.split(",");
-        searchSourceBuilder.fetchSource(includes, new String[]{});
+        searchSourceBuilder.fetchSource(includes,new String[]{});
         searchRequest.source(searchSourceBuilder);
-        //使用es客户端进行搜索请求es
+        //使用es客户端进行搜索请求Es
         List<TeachplanMediaPub> teachplanMediaPubList = new ArrayList<>();
         long total = 0;
         try {
+            //执行搜索
             SearchResponse search = restHighLevelClient.search(searchRequest);
             SearchHits hits = search.getHits();
             total = hits.totalHits;
             SearchHit[] searchHits = hits.getHits();
-            for (SearchHit searchHit : searchHits) {
-                TeachplanMediaPub teachplanMediaPub = new TeachplanMediaPub();
-                Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
+            for(SearchHit hit:searchHits){
+                TeachplanMediaPub teachplanMediaPub= new TeachplanMediaPub();
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                //取出课程计划媒资信息
                 String courseid = (String) sourceAsMap.get("courseid");
                 String media_id = (String) sourceAsMap.get("media_id");
                 String media_url = (String) sourceAsMap.get("media_url");
@@ -261,10 +267,11 @@ public class EsCourseService {
                 teachplanMediaPub.setTeachplanId(teachplan_id);
                 teachplanMediaPubList.add(teachplanMediaPub);
             }
-        } catch (IOException e) {
-            log.error("课程计划关联视频查询异常：{}",e);
-        }
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //数据集合
         QueryResult<TeachplanMediaPub> queryResult = new QueryResult<>();
         queryResult.setList(teachplanMediaPubList);
         queryResult.setTotal(total);

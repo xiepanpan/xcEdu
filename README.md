@@ -190,7 +190,7 @@ https://www.cnblogs.com/dehigher/p/10127380.html
 
 http://www.xuecheng.com/cms/preview/5e7d94f92ed406810c600bdb
 
-### 第十一天 es搜索
+### 第十一天 es搜索  logstash jdbc plugin数据同步
 
 如何维护课程索引信息？
 
@@ -209,6 +209,10 @@ http://www.xuecheng.com/cms/preview/5e7d94f92ed406810c600bdb
 
 
 es搜索
+
+```shell
+.\logstash.bat -f ..\config\mysql.conf
+```
 
 
 
@@ -301,6 +305,16 @@ WebUploader 断点续传
 #### vue 父子通信
 
 课程计划与媒体资源关联
+
+### 第十五天 
+
+根据课程id从es中查询课程信息
+
+
+
+http://ucenter.xuecheng.com/#/learning/297e7c7c62b888f00162b8a965510001/0
+
+
 
 创建映射：
 
@@ -400,7 +414,14 @@ Post http://localhost:9200/xc_course/doc/_mapping
 127.0.0.1 eureka01
 127.0.0.1 eureka02
 192.168.217.130 img.xuecheng.com
+127.0.0.1 video.xuecheng.com
 ```
+
+### 问题
+
+视频跨域问题 
+
+谷歌火狐不行 360 edge 可以
 
 端口分配：
 
