@@ -1,9 +1,10 @@
 项目：
 
-| xc-ui-pc-sysmanage | vue 项目系统管理中心 |
-| ------------------ | -------------------- |
-| xcEduService       | 后台服务             |
-| xc-ui-pc-teach     | 教学后台配置         |
+| xc-ui-pc-sysmanage      | vue 项目系统管理中心 |
+| ----------------------- | -------------------- |
+| xcEduService            | 后台服务             |
+| xc-ui-pc-teach          | 教学后台配置         |
+| xc-service-ucenter-auth | 认证中心             |
 
 
 
@@ -306,13 +307,19 @@ WebUploader 断点续传
 
 课程计划与媒体资源关联
 
+视频播放路径：http://ucenter.xuecheng.com/#/learning/297e7c7c62b888f00162b8a965510001/0
+
 ### 第十五天 
 
 根据课程id从es中查询课程信息
 
+### 第十六天 
 
+认证服务需要远程调用用户中心服务查询用户，在认证服务中创建Feign客户端
 
-http://ucenter.xuecheng.com/#/learning/297e7c7c62b888f00162b8a965510001/0
+### 第十七天  
+
+前端解析jwt
 
 
 

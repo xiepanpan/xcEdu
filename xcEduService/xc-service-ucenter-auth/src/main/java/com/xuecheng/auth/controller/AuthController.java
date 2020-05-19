@@ -14,13 +14,16 @@ import com.xuecheng.framework.utils.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * @author: xiepanpan
@@ -70,13 +73,60 @@ public class AuthController implements AuthControllerApi {
         CookieUtil.addCookie(response,cookieDomin,"/","uid",token,cookieMaxAge,false);
     }
 
+    /**
+     * 用户退出
+     * @return
+     */
     @Override
+    @PostMapping("/userlogout")
     public ResponseResult logout() {
-        return null;
+        String uid = getTokenFromCookie();
+        //从redis中删除token
+        boolean result = authService.deleteToken(uid);
+        //清除cookie
+        clearCookie(uid);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    /**
+     * 清除cookie
+     * @param token
+     */
+    private void clearCookie(String token) {
+        HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        CookieUtil.addCookie(response,cookieDomin,"/","uid",token,0,false);
     }
 
     @Override
+    @GetMapping("/userjwt")
     public JwtResult userjwt() {
+        //取出cookie中的用户身份令牌
+
+        String uid = getTokenFromCookie();
+        if (uid == null) {
+            return new JwtResult(CommonCode.FAIL,null);
+        }
+        //拿身份令牌从redis中查询jwt令牌
+        AuthToken userToken = authService.getUserToken(uid);
+        if (userToken!=null) {
+            //将jwt令牌返回给用户
+            String jwt_token = userToken.getJwt_token();
+            return new JwtResult(CommonCode.SUCCESS,jwt_token);
+        }
+        return null;
+    }
+
+    /**
+     * 从cookie中获取令牌
+     * @return
+     */
+    private String getTokenFromCookie() {
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        Map<String, String> map = CookieUtil.readCookie(request, "uid");
+        if (map!=null&&map.get("uid")!=null) {
+            String uid = map.get("uid");
+            return uid;
+        }
         return null;
     }
 }
