@@ -5,7 +5,7 @@ spring:
     name: xc-service-manage-course
   datasource:
     druid:
-      url: jdbc:mysql://192.168.217.130:3307/xc_course?characterEncoding=utf-8
+      url: jdbc:mysql://127.0.0.1:3306/xc_course?characterEncoding=utf-8
       username: root
       password: root
       driverClassName: com.mysql.jdbc.Driver
